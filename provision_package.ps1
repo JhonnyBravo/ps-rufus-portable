@@ -6,7 +6,7 @@
 $dst="$(Split-Path -Parent $profile)\script"
 
 if($install){
-    $src_zip=$(find ./ -name *.zip)
+    $src_zip=(Resolve-Path "*.zip").Path
     unzip $src_zip -d .
 
     if($(Test-Path $dst) -eq $false){
@@ -14,14 +14,14 @@ if($install){
     }
 
     $src_dir=$(echo $src_zip | sed -e "s/.zip//")
-    $src=$(find $src_dir -name *.exe)
+    $src=(Resolve-Path "${src_dir}/bin/*.exe").Path
 
     Copy-Item $src $dst
     Remove-Item $src_zip
     Remove-Item -Recurse $src_dir
 }elseif($uninstall){
     if(Test-Path $dst){
-        $path=$(find $dst -name phantomjs.exe)
+        $path=(Resolve-Path "${dst}/phantomjs.exe").Path
         Remove-Item $path
     }
 }
